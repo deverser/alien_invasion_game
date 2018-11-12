@@ -104,3 +104,20 @@ def create_fleet(ai_settings, screen, ship, aliens):
             create_alien(ai_settings, screen, aliens, alien_number, row_number)
 
 
+def check_fleet_edges(ai_settings, aliens):
+    '''Реагирует на достижение пришельцем края экрана'''
+    for alien in alien.sprites():
+        if alien.check_edges():
+            change_fleet_direction(ai_settings, aliens)
+            break
+
+
+def change_fleet_direction(ai_settings, aliens):
+
+
+
+def update_aliens(aliens):
+    '''Обновляет позиции всех пришельцев во флоте'''
+    aliens.update()
+
+
