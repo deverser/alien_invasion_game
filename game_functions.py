@@ -1,5 +1,6 @@
 import sys
 import pygame
+from time import sleep
 from bullet import Bullet
 from alien import Alien
 
@@ -125,11 +126,28 @@ def change_fleet_direction(ai_settings, aliens):
     ai_settings.fleet_direction *= -1
 
 
-def update_aliens(ai_settings, aliens):
+def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
+    """Обработка столкновения корабля с пришельцем"""
+    # Уменьшение ships_left
+    stats.shift_left -= 1
+    # Очистка списков пришельцев и пуль
+    aliens.empty()
+    bullets.empty()
+    # Создание нового флота и корабля в центре нижней части экрана
+    create_fleet(ai_settings, screen, ship, aliens)
+    ship.center_ship()
+    # Пауза
+    sleep(0.5)
+
+
+def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
     '''Проверяет достиг ли флот края экрана,
         после чего обновляет позиции всех пришельцев во флоте
     '''
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
+# Проверка коллизий пришелец-корабль
+    if pygame.sprite.spritecollideany(ship, aliens):
+        ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
 
 
