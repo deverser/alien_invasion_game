@@ -4,7 +4,8 @@ class GameStats():
         '''Инициализирует статистику'''
         self.ai_settings = ai_settings
         self.ship_left = ai_settings.ship_limit
-        self.game_active = True
+        # Игра запускается в неактивном состоянии
+        self.game_active = False
         self.reset_stats()
 
 
