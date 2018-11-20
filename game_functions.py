@@ -5,7 +5,7 @@ from bullet import Bullet
 from alien import Alien
 
 
-def check_keydown_events(event, ai_settings, screen, ship, bullets):
+def check_keydown_events(event, ai_settings, screen, ship, bullets, stats, aliens):
     '''Реагирует на нажатие клавиш'''
     if event.key == pygame.K_RIGHT:
         # Переместить корабль вправо
@@ -15,6 +15,10 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets):
         ship.moving_left = True
     elif event.key == pygame.K_SPACE:
         fire_bullet(ai_settings, screen, ship, bullets)
+    # elif event.key == pygame.K_p:
+    #     # Начинает новую игру при нажатии клавиши "p"
+    #     if stats.game_active == False:
+    #         start_game(stats, aliens, bullets, ai_settings, screen, ship)
     elif event.key == pygame.K_q:
         sys.exit()
 
@@ -33,7 +37,7 @@ def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets)
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, ai_settings, screen, ship, bullets)
+            check_keydown_events(event, ai_settings, screen, ship, bullets, stats, aliens)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -47,7 +51,8 @@ def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bul
     if button_clicked and not stats.game_active:
         # Указатель мыши скрывается с экрана
         pygame.mouse.set_visible(False)
-        # Сброс игровой статистики
+        # Сброс игровой статистики и инициализация новой игровой сессии
+        # start_game(stats, aliens, bullets, ai_settings, screen, ship)
         stats.reset_stats()
         stats.game_active = True
         # Очистка списков пришельцев и пуль
@@ -56,6 +61,20 @@ def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bul
         # Создание нового флота и размещение корабля в центре
         create_fleet(ai_settings, screen, ship, aliens)
         ship.center_ship()
+
+
+# def start_game(stats, aliens, bullets, ai_settings, screen, ship):
+    """Производит сброс игровой статистики и начинает новую игру"""
+    # Сброс игровой статистики
+    # stats.reset_stats()
+    # stats.game_active = True
+    # # Очистка списков пришельцев и пуль
+    # aliens.empty()
+    # bullets.empty()
+    # # Создание нового флота и размещение корабля в центре
+    # create_fleet(ai_settings, screen, ship, aliens)
+    # ship.center_ship()
+
 
 def update_screen(ai_settings, screen, stats, ship, aliens, bullets, play_button):
     '''Обновляет изображения на экране и отображает главный экран'''

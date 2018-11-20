@@ -9,7 +9,7 @@ class Settings():
         self.bg_color = (0, 8, 50)
         # Настройка скорости корабля
         self.ship_speed_factor = 1.5
-        self.ship_limit = 3
+        self.ship_limit = 2
         # Параметры пуль корабля
         self.bullet_speed_factor = 3
         self.bullet_width = 3
