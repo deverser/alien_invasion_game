@@ -17,7 +17,7 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets, stats, alien
         fire_bullet(ai_settings, screen, ship, bullets)
     elif event.key == pygame.K_p:
         # Начинает новую игру при нажатии клавиши "p"
-        if stats.game_active == False:
+        if stats.game_active is False:
             pygame.mouse.set_visible(False)
             start_game(stats, aliens, bullets, ai_settings, screen, ship)
     elif event.key == pygame.K_q:
@@ -106,8 +106,9 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
     # При обнаружении попадания удалить пулю и пришельца
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
     if collisions:
-        stats.score += ai_settings.alien_points
-        sb.prep_score()
+        for aliens in collisions.values():
+            stats.score += ai_settings.alien_points * len(aliens)
+            sb.prep_score()
     if len(aliens) == 0:
         # Уничтожение существующих пуль, повышение скорости и создание нового флота
         bullets.empty()
