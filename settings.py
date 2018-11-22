@@ -29,6 +29,8 @@ class Settings():
         self.alien_speed_factor = 1
         # fleet_direction = 1 - движение вправо, a -1 влево
         self.fleet_direction = 1
+        # Подсчёт очков
+        self.alien_points = 50
 
 
     def increase_speed(self):
