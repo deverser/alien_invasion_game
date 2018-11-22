@@ -50,6 +50,8 @@ def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bul
     """Запускает новую игру при нажатии кнопки Play"""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
+        # Сброс игровых настроек
+        ai_settings.initialize_dynamic_settings()
         # Указатель мыши скрывается с экрана
         pygame.mouse.set_visible(False)
         # Сброс игровой статистики и инициализация новой игровой сессии
@@ -97,9 +99,11 @@ def update_bullets(ai_settings, screen, ship, aliens, bullets):
     # При обнаружении попадания удалить пулю и пришельца
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
     if len(aliens) == 0:
-        # Уничтожение существующих пуль, создание нового флота
+        # Уничтожение существующих пуль, повышение скорости и создание нового флота
         bullets.empty()
+        ai_settings.increase_speed()
         create_fleet(ai_settings, screen, ship, aliens)
+
 
 def fire_bullet(ai_settings, screen, ship, bullets):
     '''Выпускает пулю если максимум ещё не достигнут'''
