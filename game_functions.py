@@ -5,7 +5,7 @@ from bullet import Bullet
 from alien import Alien
 
 
-def check_keydown_events(event, ai_settings, screen, ship, bullets, stats, aliens):
+def check_keydown_events(event, ai_settings, screen, ship, bullets, stats, sb, aliens):
     '''Реагирует на нажатие клавиш'''
     if event.key == pygame.K_RIGHT:
         # Переместить корабль вправо
@@ -19,7 +19,7 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets, stats, alien
         # Начинает новую игру при нажатии клавиши "p"
         if stats.game_active is False:
             pygame.mouse.set_visible(False)
-            start_game(stats, aliens, bullets, ai_settings, screen, ship)
+            start_game(stats, sb, aliens, bullets, ai_settings, screen, ship)
     elif event.key == pygame.K_q:
         sys.exit()
 
@@ -38,7 +38,7 @@ def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bull
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, ai_settings, screen, ship, bullets, stats, aliens)
+            check_keydown_events(event, ai_settings, screen, ship, bullets, stats, sb, aliens)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -52,8 +52,6 @@ def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens,
     """Запускает новую игру при нажатии кнопки Play"""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
-        # Сброс игровых настроек
-        ai_settings.initialize_dynamic_settings()
         # Указатель мыши скрывается с экрана
         pygame.mouse.set_visible(False)
         # Сброс игровой статистики и инициализация новой игровой сессии
@@ -61,9 +59,11 @@ def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens,
 
 
 def start_game(stats, sb, aliens, bullets, ai_settings, screen, ship):
-    """Производит сброс игровой статистики и начинает новую игру"""
+    """Производит сброс игровой статистики, настроек и начинает новую игру"""
     # Сброс игровой статистики
     stats.reset_stats()
+    # Сброс игровых настроек
+    ai_settings.initialize_dynamic_settings()
     stats.game_active = True
     # Сброс изображений счёта и уровня
     sb.prep_score()
