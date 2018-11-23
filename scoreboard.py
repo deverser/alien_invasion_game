@@ -16,6 +16,7 @@ class Scoreboard():
         # Подготовка изображений счета
         self.prep_score()
         self.prep_high_score()
+        self.prep_level()
 
     def prep_score(self):
         """Преобразует текущий счёт в графическое изображение"""
@@ -48,6 +49,7 @@ class Scoreboard():
         self.level_rect = self.level_image.get_rect()
         self.level_rect.right = self.score_rect.right
         self.level_rect.top = self.score_rect.bottom + 10
+
     def show_score(self):
         """Выводит текущий счёт, рекорд и уровень на экран"""
         self.screen.blit(self.score_image, self.score_rect)
