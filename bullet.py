@@ -18,6 +18,8 @@ class Bullet(Sprite):
         self.y = float(self.rect.y)
         self.color = ai_settings.bullet_color
         self.speed_factor = ai_settings.bullet_speed_factor
+        # Звук выстрела
+        self.shot_sound = pygame.mixer.Sound('sounds/blaster.wav')
 
     def update(self):
         '''Перемещает пулю вверх по экрану'''
@@ -30,3 +32,7 @@ class Bullet(Sprite):
     def draw_bullet(self):
         '''Вывод пули на экран'''
         pygame.draw.rect(self.screen, self.color, self.rect)
+
+    def pew_sound(self):
+        """Издает звук выстрела при создании пули на экране"""
+        self.shot_sound.play()

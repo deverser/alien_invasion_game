@@ -134,6 +134,7 @@ def fire_bullet(ai_settings, screen, ship, bullets):
     # Создание новой пули и включение её в группу bullets
     if len(bullets) < ai_settings.bullets_allowed:
         new_bullet = Bullet(ai_settings, screen, ship)
+        new_bullet.pew_sound()
         bullets.add(new_bullet)
 
 

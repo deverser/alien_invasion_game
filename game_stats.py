@@ -13,7 +13,6 @@ class GameStats():
         # Рекорд игры не должен сбрасываться
         self.high_score = self.get_high_score()
 
-
     def reset_stats(self):
         '''Инициализирует статистику меняющуюся по ходу игры'''
         self.ship_left = self.ai_settings.ship_limit
