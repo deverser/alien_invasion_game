@@ -10,7 +10,7 @@ class Settings():
         # Настройка скорости корабля
         self.ship_limit = 2
         # Параметры пуль корабля
-        self.bullet_width = 300
+        self.bullet_width = 3
         self.bullet_height = 15
         self.bullet_color = 229, 255, 0
         self.bullets_allowed = 3
