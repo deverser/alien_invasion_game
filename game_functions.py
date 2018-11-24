@@ -66,10 +66,7 @@ def start_game(stats, sb, aliens, bullets, ai_settings, screen, ship):
     ai_settings.initialize_dynamic_settings()
     stats.game_active = True
     # Сброс изображений счёта, количества жизней и уровня
-    sb.prep_score()
-    sb.prep_high_score()
-    sb.prep_level()
-    sb.prep_ships()
+    sb.prep_images()
     # Очистка списков пришельцев и пуль
     aliens.empty()
     bullets.empty()
@@ -117,6 +114,11 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
             stats.score += ai_settings.alien_points * len(aliens)
             sb.prep_score()
             check_high_score(stats, sb)
+    start_new_level(aliens, bullets, ai_settings, stats, sb, screen, ship)
+
+
+def start_new_level(aliens, bullets, ai_settings, stats, sb, screen, ship):
+    """Начинает новый уровень после уничтожения всех пришельцев на экране"""
     if len(aliens) == 0:
         # Уничтожение существующих пуль, повышение скорости и создание нового флота
         bullets.empty()
