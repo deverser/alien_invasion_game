@@ -38,7 +38,3 @@ class Alien(Sprite):
         '''Перемещает пришельца влево или вправо'''
         self.x += (self.ai_settings.alien_speed_factor * self.ai_settings.fleet_direction)
         self.rect.x = self.x
-
-    def alien_boom_sound(self):
-        """Издает звук взрыва пришельца"""
-        self.alien_sound.play()

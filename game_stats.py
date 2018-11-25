@@ -33,6 +33,8 @@ class GameStats():
         try:
             with open(filename) as f:
                 self.high_score = json.load(f)
+        except ValueError:
+            return 0
         except FileNotFoundError:
             return 0
         else:
