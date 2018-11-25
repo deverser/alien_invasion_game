@@ -5,7 +5,7 @@ from bullet import Bullet
 from alien import Alien
 
 
-def check_keydown_events(event, ai_settings, screen, ship, bullets, stats, sb, aliens):
+def check_keydown_events(event, ai_settings, screen, ship, gs, bullets, stats, sb, aliens):
     '''Реагирует на нажатие клавиш'''
     if event.key == pygame.K_RIGHT:
         # Переместить корабль вправо
@@ -14,7 +14,7 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets, stats, sb, a
         # Переместить корабль влево
         ship.moving_left = True
     elif event.key == pygame.K_SPACE:
-        fire_bullet(ai_settings, screen, ship, bullets)
+        fire_bullet(stats, ai_settings, screen, ship, gs, bullets)
     elif event.key == pygame.K_p:
         # Начинает новую игру при нажатии клавиши "p"
         if stats.game_active is False:
@@ -32,13 +32,13 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets):
+def check_events(ai_settings, screen, stats, sb, play_button, ship, gs, aliens, bullets):
     '''Обрабатывает нажатия клавиш и события мыши'''
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, ai_settings, screen, ship, bullets, stats, sb, aliens)
+            check_keydown_events(event, ai_settings, screen, ship, gs, bullets, stats, sb, aliens)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -93,7 +93,7 @@ def update_screen(ai_settings, screen, stats, sb, ship, aliens, bullets, play_bu
     pygame.display.flip()
 
 
-def update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets):
+def update_bullets(ai_settings, screen, stats, sb, ship, aliens, gs, bullets):
     '''Обновляет позиции пуль и уничтожает старые пули'''
     # Обновление позиций пуль
     bullets.update()
@@ -102,16 +102,17 @@ def update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets):
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
     # Проверка попаданий в пришельцев
-    check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, bullets)
+    check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, gs, bullets)
 
 
-def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, bullets):
+def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, gs, bullets):
     """Обработка коллизий пуль с пришельцами"""
     # При обнаружении попадания удалить пулю и пришельца
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
     if collisions:
         for aliens in collisions.values():
             stats.score += ai_settings.alien_points * len(aliens)
+            gs.alien_boom_sound()
             sb.prep_score()
             check_high_score(stats, sb)
     start_new_level(aliens, bullets, ai_settings, stats, sb, screen, ship)
@@ -129,13 +130,14 @@ def start_new_level(aliens, bullets, ai_settings, stats, sb, screen, ship):
         create_fleet(ai_settings, screen, ship, aliens)
 
 
-def fire_bullet(ai_settings, screen, ship, bullets):
+def fire_bullet(stats, ai_settings, screen, ship, gs, bullets):
     '''Выпускает пулю если максимум ещё не достигнут'''
     # Создание новой пули и включение её в группу bullets
-    if len(bullets) < ai_settings.bullets_allowed:
-        new_bullet = Bullet(ai_settings, screen, ship)
-        new_bullet.pew_sound()
-        bullets.add(new_bullet)
+    if stats.game_active:
+        if len(bullets) < ai_settings.bullets_allowed:
+            new_bullet = Bullet(ai_settings, screen, ship)
+            gs.pew_sound()
+            bullets.add(new_bullet)
 
 
 def get_number_aliens_x(ai_settings, alien_width):
@@ -189,9 +191,10 @@ def change_fleet_direction(ai_settings, aliens):
     ai_settings.fleet_direction *= -1
 
 
-def ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets):
+def ship_hit(ai_settings, screen, stats, gs, sb, ship, aliens, bullets):
     """Обработка столкновения корабля с пришельцем"""
     if stats.ship_left > 0:
+        gs.ship_death_sound()
         # Уменьшение ships_left
         stats.ship_left -= 1
         # Обновление игровой информации
@@ -205,21 +208,22 @@ def ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets):
         # Пауза
         sleep(1)
     else:
+        gs.ship_death_sound()
         stats.game_active = False
         pygame.mouse.set_visible(True)
 
 
-def check_aliens_bottom(ai_settings, screen, stats, sb, ship, aliens, bullets):
+def check_aliens_bottom(ai_settings, screen, stats, gs, sb, ship, aliens, bullets):
     """Проверяет добрались ли прищельцы до нижнего края экрана"""
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
             # Происходит то же, что и при столкновении с кораблем
-            ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets)
+            ship_hit(ai_settings, screen, stats, gs, sb, ship, aliens, bullets)
             break
 
 
-def update_aliens(ai_settings, screen, stats, sb, ship, aliens, bullets):
+def update_aliens(ai_settings, screen, stats, gs, sb, ship, aliens, bullets):
     '''Проверяет достиг ли флот края экрана,
         после чего обновляет позиции всех пришельцев во флоте
     '''
@@ -227,9 +231,9 @@ def update_aliens(ai_settings, screen, stats, sb, ship, aliens, bullets):
     aliens.update()
     # Проверка коллизий пришелец-корабль
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(ai_settings, screen, stats, sb, ship, aliens, bullets)
+        ship_hit(ai_settings, screen, stats, gs, sb, ship, aliens, bullets)
     # Проверка пришельцев, добравшихся до края экрана
-    check_aliens_bottom(ai_settings, screen, stats, sb, ship, aliens, bullets)
+    check_aliens_bottom(ai_settings, screen, stats, gs, sb, ship, aliens, bullets)
 
 
 def check_high_score(stats, sb):
