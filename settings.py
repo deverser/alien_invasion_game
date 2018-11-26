@@ -4,8 +4,8 @@ class Settings():
     def __init__(self):
         '''Инициализация статических настроек игры'''
         # Параметры экрана
-        self.screen_width = 1024
-        self.screen_height = 768
+        self.screen_width = 1200
+        self.screen_height = 800
         self.bg_color = (0, 8, 50)
         # Настройка скорости корабля
         self.ship_limit = 2
