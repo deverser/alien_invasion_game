@@ -1,6 +1,9 @@
 import json
 
 
+FILENAME = 'high_score.json'
+
+
 class GameStats():
     '''Отслеживание статистики для игры'''
     def __init__(self, ai_settings):
@@ -21,21 +24,17 @@ class GameStats():
 
     def save_high_score(self):
         """Сохраняет рекорд игры в файл"""
-        filename = 'high_score.json'
-        with open(filename, 'w') as f:
+        with open(FILENAME, 'w') as f:
             json.dump(self.high_score, f)
 
     def get_high_score(self):
         """Извлекает значение рекордных очков игры из файла
         для дальнейшего использования в программе
         """
-        filename = 'high_score.json'
         try:
-            with open(filename) as f:
+            with open(FILENAME) as f:
                 self.high_score = json.load(f)
-        except ValueError:
-            return 0
-        except FileNotFoundError:
+        except:
             return 0
         else:
             return self.high_score
