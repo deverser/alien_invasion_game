@@ -23,7 +23,6 @@ class Settings():
         self.score_scale = 1.5
         self.initialize_dynamic_settings()
 
-
     def initialize_dynamic_settings(self):
         """Инициализирует настройки меняющиеся по ходу игры"""
         self.ship_speed_factor = 1.5
@@ -33,7 +32,6 @@ class Settings():
         self.fleet_direction = 1
         # Подсчёт очков
         self.alien_points = 50
-
 
     def increase_speed(self):
         """Увеличивает настройки скорости и стоимость пришельцев"""
